@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="https://github.com/philipschall/shapelysmooth/blob/master/images/main.png?raw=true" width="519" height="294" />
+  <img src="https://github.com/philipschall/shapelysmooth/blob/main/images/main.png?raw=true" width="519" height="294" />
 </p>
 
 `shapelysmooth` is a polyline smoothing package for Python - mainly intended for use on shapely LineStrings and Polygons.
@@ -66,7 +66,7 @@ See
 
 The implementation also supports closed polylines and polygons (with or without holes).
 <p align="center">
-  <img src="https://github.com/philipschall/shapelysmooth/blob/master/images/laplace1.png?raw=true" width="500" height="239" />
+  <img src="https://github.com/philipschall/shapelysmooth/blob/master/main/laplace1.png?raw=true" width="500" height="239" />
 </p>
 
 <a id="chaikin"></a>
@@ -102,13 +102,13 @@ Instead of the original iterative algorithm by Chaikin, this implementation make
 By default, the algorithm will not contract the endpoints of an open polyline. Set the `keep_ends` parameter if this behaviour is unwanted.
 
 <p align="center">
-  <img src="https://github.com/philipschall/shapelysmooth/blob/master/images/chaikin1.png?raw=true" width="500" height="239" />
+  <img src="https://github.com/philipschall/shapelysmooth/blob/main/images/chaikin1.png?raw=true" width="500" height="239" />
 </p>
 
 The implementation also supports closed polylines and polygons (with or without holes).
 
 <p align="center">
-  <img src="https://github.com/philipschall/shapelysmooth/blob/master/images/chaikin2.png?raw=true" width="240" height="239" />
+  <img src="https://github.com/philipschall/shapelysmooth/blob/main/images/chaikin2.png?raw=true" width="240" height="239" />
 </p>
 
 <a id="catmullrom"></a>
@@ -144,11 +144,11 @@ This implementation makes use of the algorithm proposed by Barry and Goldman, se
 
 There are three types of Catmull-Rom splines: uniform, centripetal and chordal, which are determined by tension parameter, $\alpha$, values of $0$, $0.5$ and $1$, respectively. Note that uniform Catmull-Rom splines may contain spurious self-intersections.
 <p align="center">
-  <img src="https://github.com/philipschall/shapelysmooth/blob/master/images/catmullrom1.png?raw=true" width="500" height="239" />
+  <img src="https://github.com/philipschall/shapelysmooth/blob/main/images/catmullrom1.png?raw=true" width="500" height="239" />
 </p>
 The implementation also supports closed polylines and polygons (with or without holes).
 <p align="center">
-  <img src="https://github.com/philipschall/shapelysmooth/blob/master/images/catmullrom2.png?raw=true" width="240" height="239" />
+  <img src="https://github.com/philipschall/shapelysmooth/blob/main/images/catmullrom2.png?raw=true" width="240" height="239" />
 </p>
 
 ## Smoothing Collections of Geometries
