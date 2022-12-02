@@ -38,7 +38,6 @@ setup(
         'Intended Audience :: Developers',
         'License :: Public Domain',
         'Operating System :: Microsoft :: Windows',
-        'Operating System :: POSIX',
         'Operating System :: Unix',
         'Operating System :: MacOS',
         'Programming Language :: C++',
