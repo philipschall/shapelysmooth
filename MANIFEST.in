@@ -1,0 +1,4 @@
+include src/*.h*
+include README.md
+recursive-include external/pybind11/include *.h
+recursive-include external/pybind11/pybind11 *.py
