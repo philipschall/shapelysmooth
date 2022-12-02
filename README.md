@@ -66,7 +66,7 @@ See
 
 The implementation also supports closed polylines and polygons (with or without holes).
 <p align="center">
-  <img src="https://github.com/philipschall/shapelysmooth/blob/master/main/laplace1.png?raw=true" width="500" height="239" />
+  <img src="https://github.com/philipschall/shapelysmooth/blob/main/images/laplace1.png?raw=true" width="500" height="239" />
 </p>
 
 <a id="chaikin"></a>
