@@ -20,7 +20,7 @@ ext_modules = [
 
 setup(
     name='shapelysmooth',
-    version='0.1.0',
+    version='0.1.1',
     install_requires=['shapely'],
     python_requires='>=3.6',
     author='Philip Schall',
