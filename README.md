@@ -1,3 +1,4 @@
+[![PyPI version shields.io](https://img.shields.io/pypi/v/shapelysmooth.svg)](https://pypi.python.org/pypi/shapelysmooth/)
 
 <p align="center">
   <img src="https://github.com/philipschall/shapelysmooth/blob/main/images/main.png?raw=true" width="519" height="294" />
