@@ -1,10 +1,10 @@
 from _shapelysmooth import taubin, chaikin, catmullrom
 from shapely.geometry import LineString
 from shapely.geometry import Polygon
-from typing import Union
+from typing import List, Tuple, Union
 
 def taubin_smooth(
-    geometry: Union[LineString, Polygon, list[tuple[float, float]]],
+    geometry: Union[LineString, Polygon, List[Tuple[float, float]]],
     factor: float = 0.5,
     mu: float = -0.5,
     steps: int = 5
@@ -44,7 +44,7 @@ def taubin_smooth(
         return taubin(geometry, factor, mu, steps)
 
 def chaikin_smooth(
-    geometry: Union[LineString, Polygon, list[tuple[float, float]]],
+    geometry: Union[LineString, Polygon, List[Tuple[float, float]]],
     iters: int = 5,
     keep_ends: bool = True
 ):
@@ -78,7 +78,7 @@ def chaikin_smooth(
         return chaikin(geometry, iters, keep_ends)
 
 def catmull_rom_smooth(
-    geometry: Union[LineString, Polygon, list[tuple[float, float]]],
+    geometry: Union[LineString, Polygon, List[Tuple[float, float]]],
     alpha: float = 0.5,
     subdivs: int = 10
 ):
