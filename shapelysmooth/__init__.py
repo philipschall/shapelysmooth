@@ -2,18 +2,18 @@
 
 from __future__ import annotations
 
-from _shapelysmooth import taubin, chaikin, catmullrom
-from shapely.geometry import LineString
-from shapely.geometry import Polygon
-from shapely.geometry import MultiPoint
-from typing import TYPE_CHECKING, TypeVar, Callable, Any
+from typing import TYPE_CHECKING, Any, Callable, TypeVar
 
+from _shapelysmooth import catmullrom, chaikin, taubin
+from shapely.geometry import LineString, MultiPoint, Polygon
 
 if TYPE_CHECKING:
     GTypeVar = TypeVar("GTypeVar", LineString, Polygon, list[tuple[float, float]])
 
 
 __all__ = ["taubin_smooth", "chaikin_smooth", "catmull_rom_smooth"]
+__version__ = "0.1.1"
+
 
 class InputeTypeError(TypeError):
     def __init__(self):
@@ -21,10 +21,6 @@ class InputeTypeError(TypeError):
             "`geometry` must be either LineString, Polygon, or list of (x, y) coordinates."
         )
         super().__init__(self.message)
-
-    def __str__(self) -> str:
-        """Return the error message as a string."""
-        return self.message
 
 
 def _get_coords(
@@ -38,18 +34,20 @@ def _get_coords(
     try:
         mp = MultiPoint(geometry)
     except (TypeError, AttributeError, ValueError) as ex:
-        raise InputeTypeError() from ex
+        raise InputeTypeError from ex
     return [(p.x, p.y) for p in mp.geoms], None
 
 
-def _smooth_geometry(geometry: GTypeVar, smooth_func: Callable[..., GTypeVar], **kwargs: Any) -> GTypeVar:
+def _smooth_geometry(
+    geometry: GTypeVar, smooth_func: Callable[..., GTypeVar], *args: Any
+) -> GTypeVar:
     """Smooth the geometry using the specified smoothing function."""
     coords, interior_coords = _get_coords(geometry)
-    coords_smoothed = smooth_func(coords, **kwargs)
+    coords_smoothed = smooth_func(coords, *args)
     if isinstance(geometry, LineString):
         return LineString(coords_smoothed)
     if isinstance(geometry, Polygon) and interior_coords is not None:
-        interior_coords_smoothed = [smooth_func(c, **kwargs) for c in interior_coords]
+        interior_coords_smoothed = [smooth_func(c, *args) for c in interior_coords]
         return Polygon(coords_smoothed, interior_coords_smoothed)
     return coords_smoothed
 
@@ -82,7 +80,7 @@ def taubin_smooth(
     output : shapely.LineString, shapely.Polygon, or list
         The smoothed geometry.
     """
-    return _smooth_geometry(geometry, taubin, factor=factor, mu=mu, steps=steps)
+    return _smooth_geometry(geometry, taubin, factor, mu, steps)
 
 
 def chaikin_smooth(geometry: GTypeVar, iters: int = 5, keep_ends: bool = True) -> GTypeVar:
@@ -106,7 +104,7 @@ def chaikin_smooth(geometry: GTypeVar, iters: int = 5, keep_ends: bool = True) -
     output : shapely.LineString, shapely.Polygon, or list
         The smoothed geometry.
     """
-    return _smooth_geometry(geometry, chaikin, iters=iters, keep_ends=keep_ends)
+    return _smooth_geometry(geometry, chaikin, iters, keep_ends)
 
 
 def catmull_rom_smooth(geometry: GTypeVar, alpha: float = 0.5, subdivs: int = 10) -> GTypeVar:
@@ -133,4 +131,4 @@ def catmull_rom_smooth(geometry: GTypeVar, alpha: float = 0.5, subdivs: int = 10
     output : shapely.LineString, shapely.Polygon, or list
         The smoothed geometry.
     """
-    return _smooth_geometry(geometry, catmullrom, alpha=alpha, subdivs=subdivs)
+    return _smooth_geometry(geometry, catmullrom, alpha, subdivs)
