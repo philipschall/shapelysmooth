@@ -1,3 +1,82 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools", "wheel", "pybind11>=2.10.0"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "shapelysmooth"
+description = "A polyline smoothing package for shapely."
+readme = { file = "README.md", content-type = "text/markdown" }
+keywords = [
+  'smoothing',
+  'shapely',
+]
+license = { text = "Unlicense" }
+maintainers = [{ name = "Philip Schall", email = "philip.schall@live.com" }]
+requires-python = ">=3.6"
+classifiers = [
+    'Development Status :: 3 - Alpha',
+    'Intended Audience :: Developers',
+    'License :: Public Domain',
+    'Operating System :: Microsoft :: Windows',
+    'Operating System :: Unix',
+    'Operating System :: MacOS',
+    'Programming Language :: C++',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3 :: Only',
+    'Programming Language :: Python :: Implementation :: CPython',
+    'Programming Language :: Python :: Implementation :: PyPy',
+    'Topic :: Scientific/Engineering :: Mathematics',
+]
+version = "0.1.1"
+dependencies = [
+  "shapely",
+]
+[project.optional-dependencies]
+test = [
+  "coverage[toml]",
+  "pytest-cov",
+  "pytest-sugar",
+  "pytest-xdist[psutil]",
+]
+[project.urls]
+Homepage = "https://github.com/philipschall/shapelysmooth"
+
+[tool.pytest.ini_options]
+addopts = "--ignore=noxfile.py -n=auto -v --cov=shapelysmooth --cov-report xml --junitxml=pytest.xml --durations=5"
+doctest_optionflags = 'NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL NUMBER'
+filterwarnings = [
+  "ignore:.*numpy.ndarray size changed.*",
+]
+testpaths = [
+  "tests",
+  "shapelysmooth"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  "if TYPE_CHECKING:"
+]
+ignore_errors = true
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source = ['shapelysmooth']
+
+[tool.pyright]
+include = ["shapelysmooth"]
+reportMissingTypeStubs = false
+reportUnknownArgumentType = false
+reportUnknownLambdaType = false
+reportUnknownMemberType = false
+reportUnknownParameterType = false
+reportUnknownVariableType = false
+reportUnnecessaryIsInstance = false
+typeCheckingMode = "strict"
