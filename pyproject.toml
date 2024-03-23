@@ -11,12 +11,8 @@ name = "shapelysmooth"
 version = "0.1.1"
 description = "A polyline smoothing package for shapely."
 readme = { file = "README.md", content-type = "text/markdown" }
-keywords = [
-  'shapely',
-  'smoothing',
-]
 license = { text = "Unlicense" }
-maintainers = [{ name = "Philip Schall", email = "philip.schall@live.com" }]
+authors = [{ name = "Philip Schall", email = "philip.schall@live.com" }]
 requires-python = ">=3.6"
 classifiers = [
   'Development Status :: 3 - Alpha',
@@ -50,12 +46,22 @@ dev = [
 ]
 test = [
   "coverage[toml]",
-  "pytest-cov",
   "pytest-sugar",
-  "pytest-xdist[psutil]",
 ]
 [project.urls]
 Homepage = "https://github.com/philipschall/shapelysmooth"
+
+[tool.setuptools]
+include-package-data = true
+license-files = ["LICENSE"]
+platforms = ["any"]
+zip-safe = false
+
+[tool.setuptools.package-data]
+shapelysmooth = ["py.typed"]
+
+[tool.setuptools.packages]
+find = {namespaces = false}
 
 [tool.ruff]
 target-version = 'py39'
@@ -84,8 +90,6 @@ lint.select = [
     "PTH",
     # flake8-quotes
     "Q",
-    # bandit
-    "S",
     # flake8-simplify
     "SIM",
     # flake8-print
@@ -117,8 +121,6 @@ lint.select = [
     "TCH",
     # Ruff-specific rules
     "RUF",
-    # numpy 2 migration
-    "NPY201",
 ]
 
 exclude = [
@@ -141,13 +143,6 @@ lint.extend-safe-fixes = [
     "TID252",
 ]
 line-length = 100
-
-[tool.ruff.lint.flake8-bugbear]
-extend-immutable-calls = [
-    "chr",
-    "typer.Argument",
-    "typer.Option",
-]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
@@ -175,26 +170,29 @@ known-first-party = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--ignore=noxfile.py -n=auto -v --cov=shapelysmooth --junitxml=pytest.xml --durations=5"
-doctest_optionflags = 'NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL NUMBER'
-filterwarnings = [
-  "ignore:.*numpy.ndarray size changed.*",
+addopts = "--strict-config --capture=no --durations=5"
+doctest_optionflags = [
+  "NORMALIZE_WHITESPACE",
+  "IGNORE_EXCEPTION_DETAIL",
+  "ELLIPSIS",
+  "NUMBER",
 ]
+junit_family = "xunit2"
 testpaths = [
   "tests",
   "shapelysmooth"
 ]
 
 [tool.coverage.report]
+ignore_errors = false
+show_missing = true
 exclude_lines = [
   "if TYPE_CHECKING:"
 ]
-ignore_errors = true
 
 [tool.coverage.run]
 branch = true
-parallel = true
-source = ['shapelysmooth']
+include = ["shapelysmooth/__init__.py"]
 
 [tool.pyright]
 include = ["shapelysmooth"]

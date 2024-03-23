@@ -23,7 +23,7 @@ def get_extras() -> list[str]:
     """Get the extra deps."""
     with Path("pyproject.toml").open("rb") as f:
         extras = tomli.load(f)["project"]["optional-dependencies"]
-    return [e for e in extras if e not in ("test", "doc", "dev")]
+    return [e for e in extras if e not in ("test", "dev")]
 
 
 python_version = ["3.12"]
@@ -74,7 +74,7 @@ def type_check(session: nox.Session) -> None:
 def tests(session: nox.Session) -> None:
     """Run the test suite."""
     install_deps(session, "test")
-    session.run("python", "-m", "pytest", "--doctest-modules", "--cov-report", "html", *session.posargs)
+    session.run("coverage", "run", "-m", "pytest", "--doctest-modules", *session.posargs)
     session.notify("cover")
 
 
