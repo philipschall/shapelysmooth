@@ -18,7 +18,7 @@ __version__ = "0.1.1"
 class InputeTypeError(TypeError):
     def __init__(self):
         self.message = (
-            "`geometry` must be either LineString, Polygon, or list of (x, y) coordinates."
+            "`geometry` must be LineString, Polygon, or a list of (x, y) coordinates."
         )
         super().__init__(self.message)
 
