@@ -53,7 +53,7 @@ Homepage = "https://github.com/philipschall/shapelysmooth"
 
 [tool.setuptools]
 include-package-data = true
-license-files = ["LICENSE"]
+license-files = ["LICENSE.txt"]
 platforms = ["any"]
 zip-safe = false
 
