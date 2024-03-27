@@ -1,20 +1,66 @@
-from _shapelysmooth import taubin, chaikin, catmullrom
-from shapely.geometry import LineString
-from shapely.geometry import Polygon
-from typing import List, Tuple, Union
+"""Smooth a polyline using Taubin, Chaikin, or Catmull-Rom algorithms."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Callable, TypeVar
+
+from _shapelysmooth import catmullrom, chaikin, taubin
+from shapely.geometry import LineString, MultiPoint, Polygon
+
+if TYPE_CHECKING:
+    GTypeVar = TypeVar("GTypeVar", LineString, Polygon, list[tuple[float, float]])
+
+
+__all__ = ["taubin_smooth", "chaikin_smooth", "catmull_rom_smooth"]
+__version__ = "0.1.1"
+
+
+class InputeTypeError(TypeError):
+    def __init__(self):
+        self.message = (
+            "`geometry` must be LineString, Polygon, or a list of (x, y) coordinates."
+        )
+        super().__init__(self.message)
+
+
+def _get_coords(
+    geometry: LineString | Polygon | list[tuple[float, float]],
+) -> tuple[list[tuple[float, float]], list[list[tuple[float, float]]] | None]:
+    """Get the coordinates of the geometry."""
+    if isinstance(geometry, LineString):
+        return geometry.coords, None  # pyright: ignore[reportReturnType]
+    if isinstance(geometry, Polygon):
+        return geometry.exterior.coords, [hole.coords for hole in geometry.interiors]
+    try:
+        mp = MultiPoint(geometry)
+    except (TypeError, AttributeError, ValueError) as ex:
+        raise InputeTypeError from ex
+    return [(p.x, p.y) for p in mp.geoms], None
+
+
+def _smooth_geometry(
+    geometry: GTypeVar, smooth_func: Callable[..., GTypeVar], *args: Any
+) -> GTypeVar:
+    """Smooth the geometry using the specified smoothing function."""
+    coords, interior_coords = _get_coords(geometry)
+    coords_smoothed = smooth_func(coords, *args)
+    if isinstance(geometry, LineString):
+        return LineString(coords_smoothed)
+    if isinstance(geometry, Polygon) and interior_coords is not None:
+        interior_coords_smoothed = [smooth_func(c, *args) for c in interior_coords]
+        return Polygon(coords_smoothed, interior_coords_smoothed)
+    return coords_smoothed
+
 
 def taubin_smooth(
-    geometry: Union[LineString, Polygon, List[Tuple[float, float]]],
-    factor: float = 0.5,
-    mu: float = -0.5,
-    steps: int = 5
-):
+    geometry: GTypeVar, factor: float = 0.5, mu: float = -0.5, steps: int = 5
+) -> GTypeVar:
     """
     Taubin polyline smoothing.
 
-    Parameters:
+    Parameters
     ----------
-    geometry : shapely.geometry.LineString | shapely.geometry.Polygon | list
+    geometry : shapely.LineString, shapely.Polygon, or list
         Geometric object consisting of polylines to smooth. A shapely
         Linestring or Polygon, or a list containing tuples of (x, y)
         coordinates.
@@ -28,32 +74,22 @@ def taubin_smooth(
         Default value: -0.5.
     steps : int
         Number of smoothing steps. Default value: 5.
-    
-    Returns:
+
+    Returns
     -------
-    output : shapely.geometry.LineString | shapely.geometry.Polygon | list
+    output : shapely.LineString, shapely.Polygon, or list
         The smoothed geometry.
     """
-    if isinstance(geometry, LineString):
-        return LineString(taubin(geometry.coords, factor, mu, steps))
-    elif isinstance (geometry, Polygon):
-        return Polygon(taubin(geometry.exterior.coords, factor, mu, steps),
-                       [taubin(hole.coords, factor, mu, steps) for hole in
-                        geometry.interiors])
-    elif isinstance (geometry, list):
-        return taubin(geometry, factor, mu, steps)
+    return _smooth_geometry(geometry, taubin, factor, mu, steps)
 
-def chaikin_smooth(
-    geometry: Union[LineString, Polygon, List[Tuple[float, float]]],
-    iters: int = 5,
-    keep_ends: bool = True
-):
+
+def chaikin_smooth(geometry: GTypeVar, iters: int = 5, keep_ends: bool = True) -> GTypeVar:
     """
     Polyline smoothing using Chaikin's corner cutting algorithm.
 
-    Parameters:
+    Parameters
     ----------
-    geometry : shapely.geometry.LineString | shapely.geometry.Polygon | list
+    geometry : shapely.LineString, shapely.Polygon, or list
         Geometric object consisting of polylines to smooth. A shapely
         Linestring or Polygon, or a list containing tuples of (x, y)
         coordinates.
@@ -63,31 +99,21 @@ def chaikin_smooth(
         Preserve the original start and end nodes of the polyline. Not
         applicable to closed polylines. Default value: True.
 
-    Returns:
+    Returns
     -------
-    output : shapely.geometry.LineString | shapely.geometry.Polygon | list
+    output : shapely.LineString, shapely.Polygon, or list
         The smoothed geometry.
     """
-    if isinstance(geometry, LineString):
-        return LineString(chaikin(geometry.coords, iters, keep_ends))
-    elif isinstance (geometry, Polygon):
-        return Polygon(chaikin(geometry.exterior.coords, iters, keep_ends),
-                       [chaikin(hole.coords, iters, keep_ends) for hole in
-                        geometry.interiors])
-    elif isinstance (geometry, list):
-        return chaikin(geometry, iters, keep_ends)
+    return _smooth_geometry(geometry, chaikin, iters, keep_ends)
 
-def catmull_rom_smooth(
-    geometry: Union[LineString, Polygon, List[Tuple[float, float]]],
-    alpha: float = 0.5,
-    subdivs: int = 10
-):
+
+def catmull_rom_smooth(geometry: GTypeVar, alpha: float = 0.5, subdivs: int = 10) -> GTypeVar:
     """
     Polyline smoothing using Catmull-Rom splines.
 
-    Parameters:
+    Parameters
     ----------
-    geometry : shapely.geometry.LineString | shapely.geometry.Polygon | list
+    geometry : shapely.LineString, shapely.Polygon, or list
         Geometric object consisting of polylines to smooth. A shapely
         Linestring or Polygon, or a list containing tuples of (x, y)
         coordinates.
@@ -99,17 +125,10 @@ def catmull_rom_smooth(
         Default value: 0.5
     subdivs : int
         Number of subdivisions of each polyline segment. Default value: 10.
-    
-    Returns:
+
+    Returns
     -------
-    output : shapely.geometry.LineString | shapely.geometry.Polygon | list
+    output : shapely.LineString, shapely.Polygon, or list
         The smoothed geometry.
     """
-    if isinstance(geometry, LineString):
-        return LineString(catmullrom(geometry.coords, alpha, subdivs))
-    elif isinstance (geometry, Polygon):
-        return Polygon(catmullrom(geometry.exterior.coords, alpha, subdivs),
-                       [catmullrom(hole.coords, alpha, subdivs) for hole in
-                        geometry.interiors])
-    elif isinstance (geometry, list):
-        return catmullrom(geometry, alpha, subdivs)
+    return _smooth_geometry(geometry, catmullrom, alpha, subdivs)

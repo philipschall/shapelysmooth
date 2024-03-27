@@ -1,0 +1,18 @@
+repos:
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.3.2
+  hooks:
+  - id: ruff
+    name: Linting with Ruff
+    types_or: [python]
+    args: [--fix, --unsafe-fixes]
+  - id: ruff-format
+    name: Formatting with Ruff
+    types_or: [python]
+
+- repo: https://github.com/tox-dev/pyproject-fmt
+  rev: 1.7.0
+  hooks:
+  - id: pyproject-fmt
+    name: Apply a consistent format to pyproject.toml
