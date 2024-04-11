@@ -1,5 +1,3 @@
-import os
-import sys
 from glob import glob
 
 from pybind11.setup_helpers import Pybind11Extension, build_ext
