@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 __all__ = ["taubin_smooth", "chaikin_smooth", "catmull_rom_smooth"]
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 
 class InputeTypeError(TypeError):
